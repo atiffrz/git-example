@@ -1,1 +1,3 @@
  nvidia-settings -a AllowFlipping=0
+Atif Faraz Abdul Jameel
+

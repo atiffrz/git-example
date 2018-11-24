@@ -1,0 +1,5 @@
+#gdb nvidia-settings
+
+in (gdb)run
+
+(gdb)bt

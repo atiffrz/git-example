@@ -1,0 +1,1 @@
+ nvidia-settings -a AllowFlipping=0

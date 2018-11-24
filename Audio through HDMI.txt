@@ -1,0 +1,196 @@
+Audio through HDMI:
+
+Preparing the setup in Audio lab:
+
+1. Connect the GPU to the DVI end / HDMI end and AV Receiver has its HDMI end connected to HDMI IN which is conncected to the DVD port.
+Ensure that you choose the correct mode using the Select Source Button.
+
+2. Connect HDMI<=>HDMI cable through the HDMI out to the display's HHDMI port.
+
+
+================================================
+
+Installation of aplay and mplayer
+
+aplay
+---------------------
+Steps: 
+1. First of all install the alsa package using
+	zypper install alsa*
+	yum install alsa*
+	apt-get install alsa*
+
+2. Using the command sudo aplay -L you will know what all devices are available.	
+	Running the above command gives the following result:
+
+hdmi:CARD=NVidia,DEV=0
+   HDA NVidia, NVIDIA HDMI
+   HDMI Audio Output
+hdmi:CARD=NVidia,DEV=1
+   HDA NVidia, NVIDIA HDMI
+   HDMI Audio Output
+hdmi:CARD=NVidia,DEV=2
+   HDA NVidia, NVIDIA HDMI
+   HDMI Audio Output
+hdmi:CARD=NVidia,DEV=3
+   HDA NVidia, NVIDIA HDMI
+   HDMI Audio Output
+
+3. Perform the speaker test using the following 
+ speaker-test -c 2 -r 48000 -D hw:1,3
+
+4. Copy the Audio clips from admin named (AUDIO_CLIPS)
+
+5. USing aplay give the following commands:
+	aplay -D hw:1,3 file.wav
+
+
+mplayer:
+------------------------------
+
+1. Download latest Mplayer tar.gz file. Extract it.
+2. Go to Mplayer directory and follow the below procedure.
+	./configure --prefix=/path/usr --enable-alsa --enable-vdpau --yasm=''
+	make
+	make install
+
+
+mplayer -ao alsa:device=hw=1.3 /boot/Audio_Tests/AUDIO-test/2_Channel/nara_48khz_24bit_2ch.wav
+
+
+======================================================
+
+
+Refer link: https://help.ubuntu.com/community/SurroundSound
+
+1. edit /etc/pulse/daemon.conf as below:
+Once open, scroll down to find the line ; default-sample-channels = 2. Remove the semicolon at the start of the line and change the line according to your surround sound configuration:
+
+For 2.0 channel sound: default-sample-channels = 2
+
+For 4.0 channel sound: default-sample-channels = 4
+
+For 5.0 channel sound: default-sample-channels = 5
+
+For 5.1 channel sound: default-sample-channels = 6
+
+For 7.1 channel sound: default-sample-channels = 8
+
+Also edit the below as:
+enable-lfe-remixing = yes
+
+Save the file the restart your computer. OR #killall pulseaudio && pulseaudio. Best way is to restart
+
+2. apt-get install kmix
+3. alsamixer ==> max all volume and click input source checkbox in gnome-alsamixer
+
+For speaker test: 
+ 	
+speaker-test -c 4 -D hw:1,3
+
+=========================================
+in ubuntu==troubleshooting: 
+apt-get install gnome-alsamixer alsamixergui 
+on launching gnome-alsamixer, it is giving seg fault , so we have installed lib which it was pointing in dmesg
+
+aplay -D hw:1,3 /boot/Audio_Tests/AUDIO-test/2_Channel/2ch_16bit_32kHz.wav
+
+aplay -D plughw:1,3 /boot/Audio_Tests/AUDIO-test/2_Channel/nara_48khz_24bit_2ch.wav==>pcm decoding issue=> try using mplayer
+successful: for 24-bit files: use:
+mplayer -ao alsa:noblock:device=hw=1.7 /boot/Audio_Tests/AUDIO-test/2_Channel/nara_48khz_24bit_2ch.wav 
+
+
+==================================================================
+
+2_channel:
+
+
+
+
+==================================================================
+4_channel
+
+Edit the file /etc/pulse/daemon.conf (Remove the semicolons at the start for both)
+default-sample-channels = 4
+enable-lfe-remixing = yes
+
+
+===============multichannel====
+For mplayer LIRC error:
+edit file /root/.mplayer/config as below:
+
+lirc=no
+save and quit
+=============================
+
+aplay -D hw:1,3 /root/AUDIO-test/4_Channel/4ac3testextensible.wav
+./mplayer -ao alsa:device=hw=1.3 /root/AUDIO-test/4_Channel/4ac3testextensible.wav
+
+aplay -D hw=1.3 /root/AUDIO-test/4_Channel/4dd-broadwayextensible.wav
+./mplayer -ao alsa:device=hw=1.3 /root/AUDIO-test/4_Channel/4dd-broadwayextensible.wav
+
+
+aplay -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-11025hz-4ch-24bit-isolated-2rep-5s.wav
+aplay -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-16000hz-4ch-24bit-isolated-2rep-5s.wav
+aplay -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-96000hz-4ch-24bit-isolated-2rep-5s.wav
+aplay -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-8000hz-4ch-24bit-isolated-2rep-5s.wav
+
+===========================================================================================
+6_Channel
+
+Edit the file /etc/pulse/daemon.conf (Remove the semicolons at the start for both)
+default-sample-channels = 6
+enable-lfe-remixing = yes
+
+===============multichannel====
+For mplayer LIRC error:
+edit file /root/.mplayer/config as below:
+
+lirc=no
+save and quit
+=============================
+
+aply -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-8000hz-6ch-24bit-isolated-2rep-5s.wav
+aply -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-11025hz-6ch-24bit-isolated-2rep-5s.wav
+aply -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-16000hz-6ch-24bit-isolated-2rep-5s.wav
+aply -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-22050hz-6ch-24bit-isolated-2rep-5s.wav
+aply -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-32000hz-6ch-24bit-isolated-2rep-5s.wav
+aply -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-44100hz-6ch-24bit-isolated-2rep-5s.wav
+aply -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-48000hz-6ch-24bit-isolated-2rep-5s.wav
+aply -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-64000hz-6ch-24bit-isolated-2rep-5s.wav
+aply -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-88200hz-6ch-24bit-isolated-2rep-5s.wav
+aply -D plughw:1,3 /root/AUDIO-test/sin/sin-500hz-96000hz-6ch-24bit-isolated-2rep-5s.wav
+
+==============================================================================================
+8_channel
+
+
+Edit the file /etc/pulse/daemon.conf (Remove the semicolons at the start for both)
+default-sample-channels = 8
+enable-lfe-remixing = yes
+
+===============multichannel====
+For mplayer LIRC error:
+edit file /root/.mplayer/config as below:
+
+lirc=no
+save and quit
+=============================
+
+aply -D plughw:1,3 /root/AUDIO-test/8_Channel_ID.wav
+
+==========================================================================================
+
+
+aplay -D plughw:1,3 /root/AUDIO-test/MPG/weezer.mpg
+aplay -D plughw:1,3 /root/AUDIO-test/DolbyDigital/ac3test.wav
+aplay -D plughw:1,3 /root/AUDIO-test/DolbyDigital/dd-broadway.wav
+
+
+aplay -D plughw:1,3 /root/AUDIO-test/DTS/DTSEncoded_hdmi.wav
+aplay -D plughw:1,3 /root/AUDIO-test/DTS\DTSNara_hdmi.wav
+aplay -D plughw:1,3 /root/AUDIO-test/DTS/48kHz/DTSEncoded.wav
+aplay -D plughw:1,3 /root/AUDIO-test/DTS/HDMIDTSEncoded.wav
+aplay -D plughw:1,3 /root/AUDIO-test/DTS/96kHz/Listening/MIPS Intensive-Pinknoise/9624-MIPS-Intensive-Clfe.wav
+aplay -D plughw:1,3 /root/AUDIO-test/DTS/96kHz/Listening/MIPS Intensive-Pinknoise/9624-MIPS-Intensive-FrntSurr.wav
+====================================================================
